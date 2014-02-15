@@ -1,7 +1,25 @@
 #!/sbin/runscript
 
-readonly KSM_RUN=/sys/kernel/mm/ksm/run
+readonly KSM_DIR=/sys/kernel/mm/ksm
+readonly KSM_PAGES_SHARED=$KSM_DIR/pages_shared
+readonly KSM_PAGES_SHARING=$KSM_DIR/pages_sharing
+readonly KSM_RUN=$KSM_DIR/run
 readonly NOT_SUPPORTED="kernel does not support Kernel Samepage Merging"
+readonly PAGESIZE=$(getconf PAGESIZE)
+
+btoh() {
+    awk '{
+             if ($1 == 1) {
+                 print "1 byte"
+             } else {
+                 split("bytes KiB MiB GiB TiB PiB EiB ZiB YiB", suffix)
+                 for (power = 1; $1 > 1024; power++) {
+                     $1 /= 1024
+                 }
+                 print $1" "suffix[power]
+             }
+         }' <<< "$1"
+}
 
 depend() {
     before libvirtd
@@ -37,11 +55,15 @@ status() {
     fi
 
     local RUN=$(cat $KSM_RUN)
+    local SHARED=$(cat $KSM_PAGES_SHARED)
+    local SHARING=$(cat $KSM_PAGES_SHARING)
+    local SAVED=$((SHARING * PAGESIZE - SHARED * PAGESIZE))
     if [[ "$RUN" -eq 1 ]]; then
-        einfo "KSM (Kernel Samepage Merging) is running"
+        einfo "KSM (Kernel Samepage Merging) is running; $(btoh $SAVED) saved"
         return 0
     else
-        einfo "KSM (Kernel Samepage Merging) is not running"
+        einfo "KSM (Kernel Samepage Merging) is not running; $(btoh $SAVED) \
+               saved"
         return 1
     fi
 }
