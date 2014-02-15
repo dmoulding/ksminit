@@ -1,0 +1,47 @@
+#!/sbin/runscript
+
+readonly KSM_RUN_FILE=/sys/kernel/mm/ksm/run
+readonly NOT_SUPPORTED="kernel does not support Kernel Samepage Merging"
+
+depend() {
+    before libvirtd
+}
+
+start() {
+    ebegin "Starting KSM (Kernel Samepage Merging)"
+
+    if [[ ! -f "$KSM_RUN_FILE" ]]; then
+        eend 1 "$NOT_SUPPORTED"
+        return 1
+    fi
+
+    echo 1 > $KSM_RUN_FILE
+    eend $?
+}
+
+stop() {
+    ebegin "Stopping KSM (Kernel Samepage Merging)"
+
+    if [[ ! -f "$KSM_RUN_FILE" ]]; then
+        eend 1 "$NOT_SUPPORTED"
+        return 1
+    fi
+
+    echo 0 > "$KSM_RUN_FILE"
+    eend $?
+}
+
+status() {
+    if [[ ! -f "$KSM_RUN_FILE" ]]; then
+        eerror "$NOT_SUPPORTED"
+    fi
+
+    local RUN=$(cat $KSM_RUN_FILE)
+    if [[ "$RUN" -eq 1 ]]; then
+        einfo "KSM (Kernel Samepage Merging) is running"
+        return 0
+    else
+        einfo "KSM (Kernel Samepage Merging) is not running"
+        return 1
+    fi
+}
