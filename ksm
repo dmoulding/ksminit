@@ -1,6 +1,6 @@
 #!/sbin/runscript
 
-readonly KSM_RUN_FILE=/sys/kernel/mm/ksm/run
+readonly KSM_RUN=/sys/kernel/mm/ksm/run
 readonly NOT_SUPPORTED="kernel does not support Kernel Samepage Merging"
 
 depend() {
@@ -10,33 +10,33 @@ depend() {
 start() {
     ebegin "Starting KSM (Kernel Samepage Merging)"
 
-    if [[ ! -f "$KSM_RUN_FILE" ]]; then
+    if [[ ! -f "$KSM_RUN" ]]; then
         eend 1 "$NOT_SUPPORTED"
         return 1
     fi
 
-    echo 1 > $KSM_RUN_FILE
+    echo 1 > "$KSM_RUN"
     eend $?
 }
 
 stop() {
     ebegin "Stopping KSM (Kernel Samepage Merging)"
 
-    if [[ ! -f "$KSM_RUN_FILE" ]]; then
+    if [[ ! -f "$KSM_RUN" ]]; then
         eend 1 "$NOT_SUPPORTED"
         return 1
     fi
 
-    echo 0 > "$KSM_RUN_FILE"
+    echo 0 > "$KSM_RUN"
     eend $?
 }
 
 status() {
-    if [[ ! -f "$KSM_RUN_FILE" ]]; then
+    if [[ ! -f "$KSM_RUN" ]]; then
         eerror "$NOT_SUPPORTED"
     fi
 
-    local RUN=$(cat $KSM_RUN_FILE)
+    local RUN=$(cat $KSM_RUN)
     if [[ "$RUN" -eq 1 ]]; then
         einfo "KSM (Kernel Samepage Merging) is running"
         return 0
