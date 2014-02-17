@@ -4,7 +4,7 @@ readonly KSM_DIR=/sys/kernel/mm/ksm
 readonly KSM_PAGES_SHARED=$KSM_DIR/pages_shared
 readonly KSM_PAGES_SHARING=$KSM_DIR/pages_sharing
 readonly KSM_RUN=$KSM_DIR/run
-readonly NOT_SUPPORTED="kernel does not support Kernel Samepage Merging"
+readonly NOT_SUPPORTED="Kernel does not support Kernel Samepage Merging"
 readonly PAGESIZE=$(getconf PAGESIZE)
 
 btoh() {
