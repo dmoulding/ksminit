@@ -52,6 +52,7 @@ stop() {
 status() {
     if [[ ! -f "$KSM_RUN" ]]; then
         eerror "$NOT_SUPPORTED"
+        return 1
     fi
 
     local RUN=$(cat $KSM_RUN)
