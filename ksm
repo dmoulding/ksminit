@@ -68,3 +68,9 @@ status() {
         return 1
     fi
 }
+
+# Local Variables:
+# mode: sh
+# sh-basic-offset: 4
+# indent-tabs-mode: nil
+# End:
