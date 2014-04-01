@@ -9,16 +9,16 @@ readonly PAGESIZE=$(getconf PAGESIZE)
 
 btoh() {
     awk '{
-             if ($1 == 1) {
-                 print "1 byte"
-             } else {
-                 split("bytes KiB MiB GiB TiB PiB EiB ZiB YiB", suffix)
-                 for (power = 1; $1 > 1024; power++) {
-                     $1 /= 1024
-                 }
-                 print $1" "suffix[power]
-             }
-         }' <<< "$1"
+        if ($1 == 1) {
+            print "1 byte"
+        } else {
+            split("bytes KiB MiB GiB TiB PiB EiB ZiB YiB", suffix)
+            for (power = 1; $1 > 1024; power++) {
+                $1 /= 1024
+            }
+            print $1" "suffix[power]
+        }
+    }' <<< "$1"
 }
 
 depend() {
