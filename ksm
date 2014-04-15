@@ -1,11 +1,11 @@
 #!/sbin/runscript
 
-readonly KSM_DIR=/sys/kernel/mm/ksm
-readonly KSM_PAGES_SHARED=$KSM_DIR/pages_shared
-readonly KSM_PAGES_SHARING=$KSM_DIR/pages_sharing
-readonly KSM_RUN=$KSM_DIR/run
-readonly NOT_SUPPORTED="Kernel does not support Kernel Samepage Merging"
-readonly PAGESIZE=$(getconf PAGESIZE)
+readonly ksm_dir=/sys/kernel/mm/ksm
+readonly ksm_pages_shared=$ksm_dir/pages_shared
+readonly ksm_pages_sharing=$ksm_dir/pages_sharing
+readonly ksm_run=$ksm_dir/run
+readonly not_supported="Kernel does not support Kernel Samepage Merging"
+readonly page_size=$(getconf PAGESIZE)
 
 btoh() {
     awk '{
@@ -28,42 +28,42 @@ depend() {
 start() {
     ebegin "Starting KSM (Kernel Samepage Merging)"
 
-    if [[ ! -f "$KSM_RUN" ]]; then
-        eend 1 "$NOT_SUPPORTED"
+    if [[ ! -f "$ksm_run" ]]; then
+        eend 1 "$not_supported"
         return 1
     fi
 
-    echo 1 > "$KSM_RUN"
+    echo 1 > "$ksm_run"
     eend $?
 }
 
 stop() {
     ebegin "Stopping KSM (Kernel Samepage Merging)"
 
-    if [[ ! -f "$KSM_RUN" ]]; then
-        eend 1 "$NOT_SUPPORTED"
+    if [[ ! -f "$ksm_run" ]]; then
+        eend 1 "$not_supported"
         return 1
     fi
 
-    echo 0 > "$KSM_RUN"
+    echo 0 > "$ksm_run"
     eend $?
 }
 
 status() {
-    if [[ ! -f "$KSM_RUN" ]]; then
-        eerror "$NOT_SUPPORTED"
+    if [[ ! -f "$ksm_run" ]]; then
+        eerror "$not_supported"
         return 1
     fi
 
-    local RUN=$(cat $KSM_RUN)
-    local SHARED=$(cat $KSM_PAGES_SHARED)
-    local SHARING=$(cat $KSM_PAGES_SHARING)
-    local SAVED=$((SHARING * PAGESIZE - SHARED * PAGESIZE))
-    if [[ "$RUN" -eq 1 ]]; then
-        einfo "KSM (Kernel Samepage Merging) is running; $(btoh $SAVED) saved"
+    local run=$(cat $ksm_run)
+    local shared=$(cat $ksm_pages_shared)
+    local sharing=$(cat $ksm_pages_sharing)
+    local saved=$((sharing * page_size - shared * page_size))
+    if [[ "$run" -eq 1 ]]; then
+        einfo "KSM (Kernel Samepage Merging) is running; $(btoh $saved) saved"
         return 0
     else
-        einfo "KSM (Kernel Samepage Merging) is not running; $(btoh $SAVED) \
+        einfo "KSM (Kernel Samepage Merging) is not running; $(btoh $saved) \
                saved"
         return 1
     fi
