@@ -1,4 +1,4 @@
-#!/sbin/runscript
+#!/sbin/openrc-run
 
 readonly ksm_dir=/sys/kernel/mm/ksm
 readonly ksm_pages_shared=$ksm_dir/pages_shared
