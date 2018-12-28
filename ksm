@@ -1,7 +1,6 @@
 #!/sbin/openrc-run
 
 readonly ksm_dir=/sys/kernel/mm/ksm
-readonly ksm_pages_shared=$ksm_dir/pages_shared
 readonly ksm_pages_sharing=$ksm_dir/pages_sharing
 readonly ksm_run=$ksm_dir/run
 readonly not_supported="Kernel does not support Kernel Samepage Merging"
@@ -56,9 +55,8 @@ status() {
     fi
 
     local run=$(cat $ksm_run)
-    local shared=$(cat $ksm_pages_shared)
     local sharing=$(cat $ksm_pages_sharing)
-    local saved=$((sharing * page_size - shared * page_size))
+    local saved=$((sharing * page_size))
     if [[ "$run" -eq 1 ]]; then
         einfo "KSM (Kernel Samepage Merging) is running; $(btoh $saved) saved"
         return 0
