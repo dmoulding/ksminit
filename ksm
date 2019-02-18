@@ -61,8 +61,7 @@ status() {
         einfo "KSM (Kernel Samepage Merging) is running; $(btoh $saved) saved"
         return 0
     else
-        einfo "KSM (Kernel Samepage Merging) is not running; $(btoh $saved) \
-               saved"
+        einfo "KSM (Kernel Samepage Merging) is not running; $(btoh $saved) saved"
         return 1
     fi
 }
