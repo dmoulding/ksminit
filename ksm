@@ -33,7 +33,7 @@ start() {
     fi
 
     echo 1 > "${ksm_run}"
-    eend ${?}
+    eend "${?}"
 }
 
 stop() {
@@ -45,7 +45,7 @@ stop() {
     fi
 
     echo 0 > "${ksm_run}"
-    eend ${?}
+    eend "${?}"
 }
 
 status() {
@@ -54,14 +54,15 @@ status() {
         return 1
     fi
 
-    local run=$(cat ${ksm_run})
-    local sharing=$(cat ${ksm_pages_sharing})
+    local run=$(cat "${ksm_run}")
+    local sharing=$(cat "${ksm_pages_sharing}")
     local saved=$((sharing * page_size))
+    local human=$(btoh "${saved}")
     if [[ "${run}" -eq 1 ]]; then
-        einfo "KSM (Kernel Samepage Merging) is running; $(btoh ${saved}) saved"
+        einfo "KSM (Kernel Samepage Merging) is running; ${human} saved"
         return 0
     else
-        einfo "KSM (Kernel Samepage Merging) is not running; $(btoh ${saved}) saved"
+        einfo "KSM (Kernel Samepage Merging) is not running; ${human} saved"
         return 1
     fi
 }
