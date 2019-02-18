@@ -1,8 +1,8 @@
 #!/sbin/openrc-run
 
 readonly ksm_dir=/sys/kernel/mm/ksm
-readonly ksm_pages_sharing=$ksm_dir/pages_sharing
-readonly ksm_run=$ksm_dir/run
+readonly ksm_pages_sharing=${ksm_dir}/pages_sharing
+readonly ksm_run=${ksm_dir}/run
 readonly not_supported="Kernel does not support Kernel Samepage Merging"
 readonly page_size=$(getconf PAGESIZE)
 
@@ -17,7 +17,7 @@ btoh() {
             }
             print $1" "suffix[power]
         }
-    }' <<< "$1"
+    }' <<< "${1}"
 }
 
 depend() {
@@ -27,41 +27,41 @@ depend() {
 start() {
     ebegin "Starting KSM (Kernel Samepage Merging)"
 
-    if [[ ! -f "$ksm_run" ]]; then
-        eend 1 "$not_supported"
+    if [[ ! -f "${ksm_run}" ]]; then
+        eend 1 "${not_supported}"
         return 1
     fi
 
-    echo 1 > "$ksm_run"
-    eend $?
+    echo 1 > "${ksm_run}"
+    eend ${?}
 }
 
 stop() {
     ebegin "Stopping KSM (Kernel Samepage Merging)"
 
-    if [[ ! -f "$ksm_run" ]]; then
-        eend 1 "$not_supported"
+    if [[ ! -f "${ksm_run}" ]]; then
+        eend 1 "${not_supported}"
         return 1
     fi
 
-    echo 0 > "$ksm_run"
-    eend $?
+    echo 0 > "${ksm_run}"
+    eend ${?}
 }
 
 status() {
-    if [[ ! -f "$ksm_run" ]]; then
-        eerror "$not_supported"
+    if [[ ! -f "${ksm_run}" ]]; then
+        eerror "${not_supported}"
         return 1
     fi
 
-    local run=$(cat $ksm_run)
-    local sharing=$(cat $ksm_pages_sharing)
+    local run=$(cat ${ksm_run})
+    local sharing=$(cat ${ksm_pages_sharing})
     local saved=$((sharing * page_size))
-    if [[ "$run" -eq 1 ]]; then
-        einfo "KSM (Kernel Samepage Merging) is running; $(btoh $saved) saved"
+    if [[ "${run}" -eq 1 ]]; then
+        einfo "KSM (Kernel Samepage Merging) is running; $(btoh ${saved}) saved"
         return 0
     else
-        einfo "KSM (Kernel Samepage Merging) is not running; $(btoh $saved) saved"
+        einfo "KSM (Kernel Samepage Merging) is not running; $(btoh ${saved}) saved"
         return 1
     fi
 }
