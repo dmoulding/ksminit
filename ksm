@@ -15,7 +15,7 @@ btoh() {
             for (power = 1; $1 > 1024; power++) {
                 $1 /= 1024
             }
-            print $1" "suffix[power]
+            printf("%.2f %s", $1, suffix[power])
         }
     }' <<< "${1}"
 }
