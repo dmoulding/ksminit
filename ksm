@@ -15,7 +15,12 @@ btoh() {
             for (power = 1; $1 > 1024; power++) {
                 $1 /= 1024
             }
-            printf("%.2f %s", $1, suffix[power])
+            if ( power > 1 ) {
+                format = "%.2f %s"
+            } else {
+                format = "%d %s"
+            }
+            printf(format, $1, suffix[power])
         }
     }' <<< "${1}"
 }
