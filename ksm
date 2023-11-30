@@ -2,6 +2,7 @@
 
 readonly ksm_dir=/sys/kernel/mm/ksm
 readonly ksm_pages_sharing=${ksm_dir}/pages_sharing
+readonly ksm_pages_to_scan=${ksm_dir}/pages_to_scan
 readonly ksm_run=${ksm_dir}/run
 readonly not_supported="Kernel does not support Kernel Samepage Merging"
 readonly page_size=$(getconf PAGESIZE)
@@ -37,6 +38,9 @@ start() {
         return 1
     fi
 
+    if [[ -n "${pages_to_scan}" ]]; then
+        echo "${pages_to_scan}" > "${ksm_pages_to_scan}"
+    fi
     echo 1 > "${ksm_run}"
     eend "${?}"
 }
